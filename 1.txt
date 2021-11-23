@@ -1,0 +1,53 @@
+from gurobipy import *
+import numpy as np
+import math
+
+
+
+model = Model()   # Model是一个类，实例化一个名为model的对象
+x = {}
+b = {}
+y = {}
+target_amount = 11       # 客户点总量
+trunk_amount = 3        # 车辆总量
+time = (target_amount - 1) * 20             # 程序运行时间
+unit_cost = 1          # 单位距离行驶成本
+max_capacity = 20       # 车辆最大容量
+MD = 200                 # 车辆最大行驶距离
+loading_capacity = {}     # 车辆服务完点j后的当前载货量
+load_capacity = {}        # 车辆k从仓库出来时的载货量
+pickup = {}               # 客户点取货量
+delivery = {}             # 客户点送货量
+
+def loadDatadet(infile, k):              #导入数据集
+    fo = open(infile, 'r')
+    temp2 =[]
+    temp3 = []
+    dataset = []
+    for line in fo.readlines():
+        temp1 = line.replace('\n', '')
+        temp1 = temp1.replace('    ', ' ')
+        temp1 = temp1.replace('   ', ' ')
+        temp1 = temp1.replace('  ', ' ')
+        temp1 = temp1.strip()
+        temp2.append(temp1)
+    for i in range(0, len(temp2)):
+        temp3 = temp2[i].split()
+        dataset.append(temp3)
+    for i in range(101):
+        for j in range(k):
+            dataset[i][j] = int(dataset[i][j])
+    return dataset
+
+infile = "C:VRPDATA\\1P1.DAT"
+k = 10
+infile = loadDatadet(infile, k)
+
+dist = [(lambda z:[math.sqrt(math.pow(infile[z][1] - infile[g][1], 2)         #计算各点间距离
+                             + math.pow(infile[z][2] - infile[g][2], 2))
+                   for g in range(0, len(infile))])(i)
+        for i in range(0, len(infile))]
+
+
+for i in range(target_amount):
+    delivery[i] = infile[i][9]
